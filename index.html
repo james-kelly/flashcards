@@ -12,6 +12,7 @@
         .equation {
             font-size: 25.5vw;
             text-align: center;
+            line-height: 100%;
         }
 
         .progress {
@@ -40,11 +41,18 @@
 
 
         handleClick() {
-            this.setState(prevState => ({
-                x: prevState.a.splice(Math.floor(Math.random() * prevState.a.length), 1)[0],
-                y: prevState.a.splice(Math.floor(Math.random() * prevState.a.length), 1)[0],
-                a: prevState.a
-            }));
+            this.setState(prevState => {
+                    let x = prevState.a.splice(Math.floor(Math.random() * prevState.a.length), 1)[0],
+                        y = prevState.a.splice(Math.floor(Math.random() * prevState.a.length), 1)[0];
+
+                    x += y;
+                    return {
+                        x: x,
+                        y: y,
+                        a: prevState.a
+                    }
+                }
+            );
         }
 
         render() {
@@ -53,7 +61,7 @@
                     <div onClick={this.handleClick}>
                         <div className="equation">
                             <span>{this.state.x + 1}</span>
-                            <span>+</span>
+                            <span>-</span>
                             <span>{this.state.y + 1}</span>
                             <span>=?</span>
                         </div>
