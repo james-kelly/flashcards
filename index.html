@@ -15,7 +15,16 @@
             line-height: 100%;
         }
 
+        .equation .y {
+            border-bottom: 4px solid black;
+        }
+
+        .equation .z {
+            color: darkblue;
+        }
+
         .progress {
+            color: lightblue;
             font-size: 6pt;
             text-align: center;
         }
@@ -29,12 +38,18 @@
             super(props);
 
             let a = Array();
-            for (let i = 0; i < props.high; i++)
-                a.push(...Array(props.high).keys())
+            for (let i = 0; i < props.high; i++) {
+                for (let j = 0; j < props.high; j++) {
+                    a.push([i + 1, j + 1]);
+                }
+            }
 
-            this.state = {
-                a: a
-            };
+            console.log(a);
+
+            let [x, y] = a.splice(Math.floor(Math.random() * a.length), 1)[0];
+
+            this.state = {a, x: x + y, y, z: "?"};
+
 
             this.handleClick = this.handleClick.bind(this);
         }
@@ -42,35 +57,60 @@
 
         handleClick() {
             this.setState(prevState => {
-                    let x = prevState.a.splice(Math.floor(Math.random() * prevState.a.length), 1)[0],
-                        y = prevState.a.splice(Math.floor(Math.random() * prevState.a.length), 1)[0];
 
-                    x += y;
-                    return {
-                        x: x,
-                        y: y,
-                        a: prevState.a
+                    if (prevState.z == "?") {
+                        return {
+                            a: prevState.a,
+                            x: prevState.x,
+                            y: prevState.y,
+                            z: prevState.x - prevState.y,
+                        };
+                    } else {
+                        let a = prevState.a.slice();
+                        let [x, y] = a.splice(Math.floor(Math.random() * a.length), 1)[0];
+
+                        return {
+                            a: a,
+                            x: x + y,
+                            y,
+                            z: "?",
+                        };
                     }
                 }
             );
         }
 
-        render() {
-            if (typeof this.state.x !== 'undefined') {
-                return (
-                    <div onClick={this.handleClick}>
-                        <div className="equation">
-                            <span>{this.state.x + 1}</span>
-                            <span>-</span>
-                            <span>{this.state.y + 1}</span>
-                            <span>=?</span>
-                        </div>
 
-                        <div className="progress">{Array(this.state.a.length).fill().map((_, i) => '.')}</div>
-                    </div>);
-            } else {
-                return (<div className="equation" onClick={this.handleClick}>Click me to start!</div>);
-            }
+        render() {
+            console.log(this.state);
+
+            return (
+                <div>
+                    <div className="progress">{this.state.a.length}</div>
+
+                    <div className="equation" onClick={this.handleClick}>
+                        <div className="x">
+                            <span>&nbsp;</span>
+                            <span>{this.state.x < 10 && " "}</span>
+                            <span>{this.state.x}</span>
+                        </div>
+                        <div>
+                            <span className="y">
+                            <span>-</span>
+                            <span>{this.state.y < 10 && " "}</span>
+                            <span>{this.state.y}</span></span>
+                        </div>
+                        <div>
+                            <span className="z">
+                            <span>&nbsp;</span>
+                            <span>{this.state.z < 10 && " "}</span>
+                            <span>{this.state.z}</span></span>
+                        </div>
+                    </div>
+                    <br/>
+                </div>
+            );
+
 
         }
     }
